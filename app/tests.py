@@ -47,13 +47,18 @@ class TestFestivalNames(unittest.TestCase):
 
     def test_convert_list_to_first_word_frequency_list(self):
         obj = FestivalNames()
-        data = obj.convert_list_to_first_word_frequency_list()
+        data_dict = obj.convert_list_to_first_word_frequency_list()
 
-    def test_convert_list_to_first_word_frequency_list(self):
-        obj = FestivalNames()
+        data_dict_filtered = obj.filter_non_repeating_names(data_dict)
 
-        data = obj.convert_list_to_first_word_frequency_list()
-        print obj.filter_non_repeating_names(data)
+        data_list = obj.build_festival_names(data_dict_filtered)
+        print data_list
+
+    # def test_convert_list_to_first_word_frequency_list(self):
+    #     obj = FestivalNames()
+
+    #     data = obj.convert_list_to_first_word_frequency_list()
+    #     print obj.filter_non_repeating_names(data)
 
 if __name__ == '__main__':
     unittest.main()
