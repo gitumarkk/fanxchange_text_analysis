@@ -39,7 +39,7 @@ class TestWordCount(unittest.TestCase):
 
 class TestFestivalNames(unittest.TestCase):
     def setUp(self):
-        self.content = "One Two Two Three Three Three Four Four Four Four"
+        self.content = "Mumford & Sons Little lion Man \nMumford & Sons The Cave \nRihanna Umbrella"
 
     def test_initialize_word_count_has_default_content(self):
         obj = FestivalNames()
@@ -47,18 +47,25 @@ class TestFestivalNames(unittest.TestCase):
 
     def test_convert_list_to_first_word_frequency_list(self):
         obj = FestivalNames()
-        data_dict = obj.convert_list_to_first_word_frequency_list()
+        obj.text_content = self.content
 
-        data_dict_filtered = obj.filter_non_repeating_names(data_dict)
+        data_all = obj.convert_text_content_to_first_word_dict()
+        self.assertEqual(
+            data_all,
+            {'Rihanna': ['Rihanna Umbrella'], 'Mumford': ['Mumford & Sons Little lion Man ', 'Mumford & Sons The Cave ']}
+        )
 
-        data_list = obj.build_festival_names(data_dict_filtered)
-        print data_list
+        data_unique = obj.filter_non_repeating_names(data_all)
+        self.assertEqual(
+            data_unique,
+            {'Mumford': ['Mumford & Sons Little lion Man ', 'Mumford & Sons The Cave ']}
+        )
 
-    # def test_convert_list_to_first_word_frequency_list(self):
-    #     obj = FestivalNames()
-
-    #     data = obj.convert_list_to_first_word_frequency_list()
-    #     print obj.filter_non_repeating_names(data)
+        artist_list = obj.build_festival_names(data_unique)
+        self.assertEqual(
+            artist_list,
+            ['Mumford & Sons']
+        )
 
 if __name__ == '__main__':
     unittest.main()

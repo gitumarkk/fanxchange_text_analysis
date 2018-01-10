@@ -1,14 +1,18 @@
+# Python
 import os
+import sys
 
+# App
 from base import Base
 
 
 class FestivalNames(Base):
-    def convert_list_to_first_word_frequency_list(self):
-        """
+    def convert_text_content_to_first_word_dict(self):
+        """Concerts the extracted text content into a dict
 
         Returns:
-            dict:
+            dict: Contains the first word in the sentences as the key
+            and sentences that has the first word in a values list
         """
         output = {}
         text_list = self.text_content.split('\n')
@@ -24,19 +28,25 @@ class FestivalNames(Base):
         return output
 
     def filter_non_repeating_names(self, data):
-        """
+        """Used to narrow down on sentences where the first word has more than one occurences..
+
+        Returns:
+            dict: Contains keys of first word in sentences and values where
+                the list has 2 or more items.
 
         """
         return { key: value for key, value in data.items() if len(value) > 1 }
 
     def get_sentence_commonality(self, line_1, line_2):
-        """
+        """ First the first n characters where 2 sentences are the same. Assumes the whole
+            sentence doesn't overlap hence there will not be an out of index error.
+
         Args:
-            line_1 (str):
-            line_2 (str):
+            line_1 (str): Sentence 1
+            line_2 (str): Sentence 2
 
         Returns:
-            str:
+            str | None: Where 2 sentences overlap, or none if there is no overlap
         """
         festival_name = ''
 
@@ -49,12 +59,15 @@ class FestivalNames(Base):
 
 
     def build_festival_names(self, data):
-        """
+        """ Build festival names list where there list contains an overlap of first n
+            characters between two sentences
+
         Args:
-            data (dict):
+            data (dict): Contains key, valu dict where the keys are first words and values
+                are a list of sentences
 
         Returns:
-            list:
+            list: List containing festival names
         """
         festival_name_list = []
 
@@ -64,13 +77,13 @@ class FestivalNames(Base):
         return festival_name_list
 
     def get_festival_names(self):
-        """
-
+        """ A facade type function which allows festival names to be generated but hides
+            the granular method calls.
         Returns:
-            list:
+            list: Contains the festival names
         """
-        data_all = convert_list_to_first_word_frequency_list()
-        data_unique = filter_non_repeating_names()
+        data_all = self.convert_text_content_to_first_word_dict()
+        data_unique = self.filter_non_repeating_names(data_all)
         return self.build_festival_names(data_unique)
 
 
@@ -81,7 +94,7 @@ if __name__ == '__main__':
     if len(argv) > 1:
         data_file_path = argv[1]
 
-    obj = WordCounter(data_file_path)
-    print "Unique names: %s" % obj.get_festival_names()
+    obj = FestivalNames(data_file_path)
+    print "The Festivals are:\n%s" % "\n".join(obj.get_festival_names())
 
 
